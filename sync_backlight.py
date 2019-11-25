@@ -61,11 +61,10 @@ class BacklightSync(object):
                 max_brightness = int(max_file.read())
                 actual_brightness = int(actual_file.read())
 
-            brightness = actual_brightness / max_brightness
-        
-            output_str = f'New brightness: {int(brightness*100)}%'
-        
-            if not brightness == old_brightness:
+            if not actual_brightness == old_brightness:
+                brightness = actual_brightness / max_brightness
+                output_str = f'New brightness: {int(brightness*100)}%'
+
                 if self.display_list == []:
                     self.reload_ddcci_backlight()
                     self.get_display_settings()
@@ -77,10 +76,18 @@ class BacklightSync(object):
                     if brightness_ext > display['max_brightness']:
                         brightness_ext = display['max_brightness']
 
-                    if brightness_ext <= 25:
+                    min_brightness = 0.35
+                    min_brightness_ext = min_brightness * display['max_brightness']
+
+                    # Set external brightness to 0 if OLED display is below min_brightness
+                    if brightness <= min_brightness:
                         brightness_ext = 0
                     else:
-                        brightness_ext = int((brightness_ext-25)*(4/3))
+                        # Now account for this offset and linearly scale brightness to 100%
+                        brightness_ext_unscaled = brightness_ext - min_brightness_ext
+                        scale = display['max_brightness'] / (display['max_brightness'] - min_brightness_ext)
+
+                        brightness_ext = int(brightness_ext_unscaled * scale)
 
                     try:
                         with open(display['brightness_path'], 'wt') as ext_display_brightness_file:
@@ -96,7 +103,7 @@ class BacklightSync(object):
                     
                     output_str += f' | Screen {i}: {brightness_ext}%'
                     
-                old_brightness = brightness
+                old_brightness = actual_brightness
 
                 if not self.quiet:
                     print(output_str)
@@ -107,12 +114,12 @@ def main():
     import argparse
 
     parser = argparse.ArgumentParser(formatter_class=argparse.ArgumentDefaultsHelpFormatter)
-    parser.add_argument('-s', '--sleep-time', type=float, default=0.2, help='Time between two brightness updates')
-    parser.add_argument('-quiet', type=bool, default=True, help='Quietmode')
+    parser.add_argument('-s', '--sleep-time', type=float, default=2, help='Time between two brightness updates')
+    parser.add_argument('--no-quiet', dest='quiet', action='store_false', help='Quietmode')
 
     args = parser.parse_args()
 
-    Syncer = BacklightSync(args.quiet)
+    Syncer = BacklightSync(quiet_mode=args.quiet)
 
     Syncer.sync(args.sleep_time)
     
