@@ -8,9 +8,6 @@ class BacklightSync(object):
     def __init__(self, quiet_mode=False):
         self.quiet = quiet_mode
         print('BacklightSync instantiated')
-    
-    def get_display_list(self):
-        return os.listdir('/sys/class/backlight')
 
     def update_ext_display_list(self):
         self.display_list = os.listdir('/sys/class/backlight')
