@@ -75,11 +75,12 @@ class BacklightSync(object):
 
                     if brightness_ext > display['max_brightness']:
                         brightness_ext = display['max_brightness']
-
+                    
+                    # Set the minimum brightness of the OLED Screen,
+                    # below the brightness of the external display is set to zero
                     min_brightness = 0.35
                     min_brightness_ext = min_brightness * display['max_brightness']
 
-                    # Set external brightness to 0 if OLED display is below min_brightness
                     if brightness <= min_brightness:
                         brightness_ext = 0
                     else:
