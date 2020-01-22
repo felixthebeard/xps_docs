@@ -2,8 +2,7 @@
 
 - Install ddcci_backlight 
 - add ddcci module
-
-TODO: Findout which module converts to the gamma values
+- instal icc-brightness https://github.com/udifuchs/icc-brightness
 
 ## Sync Backlight with external screens
 - Install https://gitlab.com/ddcci-driver-linux/ddcci-driver-linux
