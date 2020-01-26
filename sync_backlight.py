@@ -47,16 +47,16 @@ class BacklightSync(object):
         base_path = '/sys/class/backlight'
         backlight_path = os.path.join(base_path, 'intel_backlight')
         max_path = os.path.join(backlight_path, 'max_brightness')
-        actual_path = os.path.join(backlight_path, 'actual_brightness')
+        brightness_path = os.path.join(backlight_path, 'brightness')
 
         self.get_display_settings()
         
         old_brightness = None
     
         while True:
-            with open(str(max_path), 'rt') as max_file, open(str(actual_path), 'rt') as actual_file:
+            with open(str(max_path), 'rt') as max_file, open(str(brightness_path), 'rt') as brightness_file:
                 max_brightness = int(max_file.read())
-                actual_brightness = int(actual_file.read())
+                actual_brightness = int(brightness_file.read())
 
             if not actual_brightness == old_brightness:
                 brightness = actual_brightness / max_brightness
