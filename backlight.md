@@ -2,7 +2,11 @@
 
 - Install ddcci_backlight 
 - add ddcci module
+
+For Ubuntu 19.x:
 - instal icc-brightness https://github.com/udifuchs/icc-brightness
+
+Under pop.os 20.04 icc-brightness is not necessary anymore and the brightness works out of the box.
 
 ## Sync Backlight with external screens
 - Install https://gitlab.com/ddcci-driver-linux/ddcci-driver-linux
